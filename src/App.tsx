@@ -1,7 +1,5 @@
-import React, { useMemo } from "react";
-import { Form, Input, Button, notification } from "antd";
-
-const Context = React.createContext({ name: "Default" });
+import React from "react";
+import { Form, Input, Button, notification, ConfigProvider } from "antd";
 
 const App: React.FC = () => {
   const [form] = Form.useForm();
@@ -15,18 +13,12 @@ const App: React.FC = () => {
     address?: string;
   }
 
-  const contextValue = useMemo(() => ({ name: "User Form" }), []);
-
   // Function to handle form submission
   const onFinish = (values: FormValues) => {
     console.log("Received values of form:", values);
     api.success({
       message: "Success",
-      description: (
-        <Context.Consumer>
-          {({ name }) => `Form submitted successfully from ${name}!`}
-        </Context.Consumer>
-      ),
+      description: "Form submitted successfully from User Form!",
       placement: "top",
       duration: 3,
     });
@@ -36,18 +28,21 @@ const App: React.FC = () => {
     console.log("Failed:", errorInfo);
     api.error({
       message: "Error",
-      description: (
-        <Context.Consumer>
-          {({ name }) => `Please correct the form errors in ${name}.`}
-        </Context.Consumer>
-      ),
+      description: "Please correct the form errors in User Form.",
       placement: "top",
       duration: 3,
     });
   };
 
   return (
-    <Context.Provider value={contextValue}>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#1677ff",
+          borderRadius: 6,
+        },
+      }}
+    >
       {contextHolder}
       <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-inter">
         <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
@@ -143,7 +138,7 @@ const App: React.FC = () => {
           </Form>
         </div>
       </div>
-    </Context.Provider>
+    </ConfigProvider>
   );
 };
 
